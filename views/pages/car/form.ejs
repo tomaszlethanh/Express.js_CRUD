@@ -1,0 +1,84 @@
+<%- include('../../fragments/header.ejs') %>
+<main>
+      <script type="application/javascript" src ="/js/validationCarForm.js"></script>
+      <h2><%= pageTitle %></h2>
+      <form class="form" method="post" action="<%=formAction%>" novalidate onsubmit="return validateForm();" >
+        <input type="hidden" name="_id" value="<%= car._id %>">
+        <label for="brand">Brand: <span class="symbol-required">*</span></label>
+        <input type="text" name="brand" id="brand" value="<%= car.brand %>" class="<%= validationErrors.find(e => e.path.includes('brand')) ? 'error-input' : '' %>" <%= (formMode == 'showDetails') ? 'disabled' : '' %>  />
+        <span id="errorBrand" class="errors-text">
+          <% if (validationErrors.find(e => e.path.includes('brand'))) { %>
+          <%= validationErrors.find(e => e.path.includes('brand')).message %>
+          <% } %>
+        </span>
+        <label for="model">Model: <span class="symbol-required">*</span></label>
+        <input type="text" name="model" id="model" value="<%= car.model %>" class="<%= validationErrors.find(e => e.path.includes('model')) ? 'error-input' : '' %>" <%= (formMode == 'showDetails') ? 'disabled' : '' %> />
+        <span id="errorModel" class="errors-text">
+          <% if (validationErrors.find(e => e.path.includes('model'))) { %>
+          <%= validationErrors.find(e => e.path.includes('model')).message %>
+          <% } %>
+        </span>
+        <label for="registrationNumber"
+          >Registration number: <span class="symbol-required">*</span>
+        </label>
+        <input
+          type="text" name="registrationNumber" id="registrationNumber"
+          value="<%= car.registrationNumber %>" class="<%= validationErrors.find(e => e.path.includes('registrationNumber')) ? 'error-input' : '' %>" <%= (formMode == 'showDetails') ? 'disabled' : '' %>
+        />
+        <span id="errorRegistrationNumber" class="errors-text">
+          <% if (validationErrors.find(e => e.path.includes('registrationNumber'))) { %>
+          <%= validationErrors.find(e => e.path.includes('registrationNumber')).message %>
+          <% } %>
+        </span>
+        <label for="numberOfSeats">Number of seats: <span class="symbol-required">*</span></label>
+        <input type="text" name="numberOfSeats" id="numberOfSeats"
+        value="<%= car.numberOfSeats %>" class="<%= validationErrors.find(e => e.path.includes('numberOfSeats')) ? 'error-input' : '' %>" <%= (formMode == 'showDetails') ? 'disabled' : '' %> />
+        <span id="errorNumberOfSeats" class="errors-text">
+          <% if (validationErrors.find(e => e.path.includes('numberOfSeats'))) { %>
+          <%= validationErrors.find(e => e.path.includes('numberOfSeats')).message %>
+          <% } %>
+        </span>
+
+        <% if (formMode == 'showDetails') { %>
+          <div class="section-buttons">
+            <a href="/cars/edit/<%= car._id %>" class="button-edit">Edit</a>
+          </div>
+        <% } %>
+
+
+        <% if (formMode != 'showDetails') { %>
+          <div class="form-buttons">
+            <p id="errorsSummary" class="errors-text"><%= formMode === 'invalid' ? 'Form has errors' : '' %></p>
+            <input class="form-button-submit" type="submit" value="<%=btnLabel%>" />
+            <a class="form-button-cancel" href="/cars">Cancel</a>
+          </div>
+        <% } %>
+      </form>
+
+      <% if (formMode == 'showDetails') { %>
+        <h2>Rental details</h2>
+        <table class="table-list">
+          <thead>
+          <tr>
+            <th>Client</th>
+            <th>Date from</th>
+            <th>Date to</th>
+          <tr>
+          <thead>
+          <tbody>
+          <% for (let r of car.rentals) { %>
+            <tr>
+              <td><a href="/clients/details/<%= r.client._id %>"><%= r.client.firstName %> <%= r.client.lastName %></a></td>
+              <td><%= r.dateFrom.toISOString().split('T')[0] %></td>
+              <td><%= r.dateTo ? r.dateTo.toISOString().split('T')[0] : '' %></td>
+            </tr>
+          <% } %>
+          </tbody>
+        </table>
+        <% } %>
+
+        <% if (formMode === 'showDetails') { %>
+          <p><a class="form-button-cancel" href="/cars">Back</a></p>
+        <% } %>
+    </main>
+<%- include('../../fragments/footer.ejs') %>

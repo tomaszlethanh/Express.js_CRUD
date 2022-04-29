@@ -1,0 +1,85 @@
+<%- include('../../fragments/header.ejs') %>
+    <main>
+          <script type="application/javascript" src ="/js/validationClientForm.js"></script>
+          <h2><%= pageTitle %></h2>
+          <form class="form" method="post" action="<%=formAction%>" novalidate onsubmit="return validateForm();" >
+            <input type="hidden" name="_id" value="<%= _client._id %>">
+            <label for="firstName">First name: <span class="symbol-required">*</span></label>
+            <input type="text" name="firstName" id="firstName" value="<%= _client.firstName %>" class="<%= validationErrors.find(e => e.path.includes('firstName')) ? 'error-input' : '' %>" <%= (formMode == 'showDetails') ? 'disabled' : '' %> />
+            <span id="errorFirstName" class="errors-text">
+              <% if (validationErrors.find(e => e.path.includes('firstName'))) { %>
+              <%= validationErrors.find(e => e.path.includes('firstName')).message %>
+              <% } %>
+            </span>
+            <label for="lastName">Last name: <span class="symbol-required">*</span></label>
+            <input type="text" name="lastName" id="lastName" value="<%= _client.lastName %>" class="<%= validationErrors.find(e => e.path.includes('lastName')) ? 'error-input' : '' %>" <%= (formMode == 'showDetails') ? 'disabled' : '' %> />
+            <span id="errorLastName" class="errors-text">
+              <% if (validationErrors.find(e => e.path.includes('lastName'))) { %>
+              <%= validationErrors.find(e => e.path.includes('lastName')).message %>
+              <% } %>
+            </span>
+            <label for="pesel">PESEL: <span class="symbol-required">*</span></label>
+            <input
+              type="text" name="pesel" id="pesel" class="<%= validationErrors.find(e => e.path.includes('pesel')) ? 'error-input' : '' %>"
+              value="<%= _client.pesel %>" <%= (formMode == 'showDetails') ? 'disabled' : '' %>
+            />
+            <span id="errorPesel" class="errors-text">
+              <% if (validationErrors.find(e => e.path.includes('pesel'))) { %>
+              <%= validationErrors.find(e => e.path.includes('pesel')).message %>
+              <% } %>
+            </span>
+            <label for="phoneNumber">Phone number: <span class="symbol-required">*</span></label>
+            <input type="text" name="phoneNumber" id="phoneNumber"
+            value="<%= _client.phoneNumber %>" class="<%= validationErrors.find(e => e.path.includes('phoneNumber')) ? 'error-input' : '' %>"
+            <%= (formMode == 'showDetails') ? 'disabled' : '' %> />
+            <span id="errorPhoneNumber" class="errors-text">
+              <% if (validationErrors.find(e => e.path.includes('phoneNumber'))) { %>
+              <%= validationErrors.find(e => e.path.includes('phoneNumber')).message %>
+              <% } %>
+            </span>
+
+            <% if (formMode == 'showDetails') { %>
+              <div class="section-buttons">
+                <a href="/clients/edit/<%= _client._id %>" class="button-edit">Edit</a>
+              </div>
+            <% } %>
+
+
+            <% if (formMode != 'showDetails') { %>
+              <div class="form-buttons">
+                 <p id="errorsSummary" class="errors-text"><%= formMode === 'invalid' ? 'Form has errors' : '' %></p>
+                 <input class="form-button-submit" type="submit" value="<%=btnLabel%>" />
+                 <a class="form-button-cancel" href="/clients">Cancel</a>
+              </div>
+            <% } %>
+          </form>
+
+          <% if (formMode == 'showDetails') { %>
+            <h2>Rental details</h2>
+            <table class="table-list">
+              <thead>
+              <tr>
+                <th>Car registration</th>
+                <th>Date from</th>
+                <th>Date to</th>
+              <tr>
+              <thead>
+              <tbody>
+              <% for (let r of _client.rentals) { %>
+                <tr>
+                  <td><a href="/cars/details/<%= r.car._id %>"><%= r.car.registrationNumber %></a></td>
+                  <td><%= r.dateFrom.toISOString().split('T')[0] %></td>
+                  <td><%= r.dateTo ? r.dateFrom.toISOString().split('T')[0] : '' %></td>
+                </tr>
+              <% } %>
+              </tbody>
+            </table>
+            <% } %>
+
+            <% if (formMode === 'showDetails') { %>
+              <p><a class="form-button-cancel" href="/clients">Back</a></p>
+            <% } %>
+
+
+        </main>
+<%- include('../../fragments/footer.ejs') %>

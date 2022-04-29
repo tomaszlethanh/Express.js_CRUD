@@ -1,0 +1,74 @@
+<%- include('../../fragments/header.ejs') %>
+    <main>
+      <script type="application/javascript" src="/js/validationRentalForm.js"></script>
+      <h2><%= pageTitle %></h2>
+      <form class="form" method="post" action="<%=formAction%>" novalidate>
+        <input type="hidden" name="_id" value="<%= rental._id %>">
+        <label for="client">Client: <span class="symbol-required">*</span></label>
+        <select name="client_id" id="client" class="<%= validationErrors.find(e => e.path.includes('client_id')) ? 'error-input' : '' %>" required <%= (formMode == 'showDetails') ? 'disabled' : '' %> >
+          <option value="" >-- Select --</option>
+          <% for (let i=0; i < allClients.length; i++) { let client = allClients[i]; %>
+            <option value="<%= client._id %>" label="<%= client.firstName + ' ' + client.lastName %>"
+            <%= formMode === 'invalid' ? (client._id.toString() === rental.client_id.toString() ? 'selected' : '') : (rental._id && client._id.toString() === rental.client._id.toString() ? 'selected' : '' ) %>
+
+            ></option>
+          <% } %>
+        </select>
+        <span id="errorClient" class="errors-text">
+          <% if (validationErrors.find(e => e.path.includes('client_id'))) { %>
+          <%= validationErrors.find(e => e.path.includes('client_id')).message %>
+          <% } %>
+        </span>
+        <label for="car">Car: <span class="symbol-required">*</span></label>
+        <select name="car_id" id="car" class="<%= validationErrors.find(e => e.path.includes('car_id')) ? 'error-input' : '' %>" required <%= (formMode == 'showDetails') ? 'disabled' : '' %> >
+          <option value="" >-- Select --</option>
+          <% for (let i=0; i < allCars.length; i++) { let car = allCars[i]; %>
+            <option value="<%= car._id %>" label="<%= car.registrationNumber %>"
+            <%= formMode === 'invalid' ? (car._id.toString() === rental.car_id.toString() ? 'selected' : '') : (rental._id && car._id.toString() === rental.car._id.toString() ? 'selected' : '' ) %> ></option>
+          <% } %>
+        </select>
+        <span id="errorCar" class="errors-text">
+          <% if (validationErrors.find(e => e.path.includes('car_id'))) { %>
+          <%= validationErrors.find(e => e.path.includes('car_id')).message %>
+          <% } %>
+        </span>
+        <label for="dateFrom"
+          >Date from: <span class="symbol-required">*</span></label
+        >
+        <input type="date" id="dateFrom" name="dateFrom"
+        value="<%= (formMode === 'invalid') ? rental.dateFrom : (rental.dateFrom ? rental.dateFrom.toISOString().split('T')[0] : '') %>"
+        class="<%= validationErrors.find(e => e.path.includes('dateFrom')) ? 'error-input' : '' %>"
+        required <%= (formMode == 'showDetails') ? 'disabled' : '' %>
+        />
+        <span id="errorDateFrom" class="errors-text">
+          <% if (validationErrors.find(e => e.path.includes('dateFrom'))) { %>
+          <%= validationErrors.find(e => e.path.includes('dateFrom')).message %>
+          <% } %>
+        </span>
+        <label for="dateTo">Date to: </label>
+        <input type="date" id="dateTo" name="dateTo" value="<%= (formMode === 'invalid') ? rental.dateTo : (rental.dateTo ? rental.dateTo.toISOString().split('T')[0] : '') %>"
+        class="<%= validationErrors.find(e => e.path.includes('dateTo')) ? 'error-input' : '' %>" <%= (formMode == 'showDetails') ? 'disabled' : '' %> />
+        <span id="errorDateTo" class="errors-text">
+          <% if (validationErrors.find(e => e.path.includes('dateTo'))) { %>
+          <%= validationErrors.find(e => e.path.includes('dateTo')).message %>
+          <% } %>
+        </span>
+
+        <% if (formMode == 'showDetails') { %>
+          <div class="section-buttons">
+            <a href="/rentals/edit/<%= rental._id %>" class="button-edit">Edit</a>
+          </div>
+        <% } %>
+
+        <% if (formMode != 'showDetails') { %>
+          <div class="form-buttons">
+             <p id="errorsSummary" class="errors-text"><%= formMode === 'invalid' ? 'Form has errors' : '' %></p>
+             <input type="submit" class="form-button-submit" value="<%=btnLabel%>" />
+             <a class="form-button-cancel" href="/rentals">Cancel</a>
+          </div>
+        <% } %>
+
+
+      </form>
+    </main>
+<%- include('../../fragments/footer.ejs') %>
